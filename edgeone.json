@@ -8,6 +8,10 @@
     }
   },
   "agents": {
-    "framework": "claude-agent-sdk"
+    "framework": "workflow"
+  },
+  "services": {
+    "framework": "workflow",
+    "dir": "services"
   }
 }
