@@ -1,5 +1,6 @@
 {
-  "name": "multimodal-file-assistant-agent",
+  "name": "multimodal-file-workspace",
+  "description": "Enterprise multimodal file processing workspace with sandbox execution and interactive delivery",
   "private": true,
   "version": "0.2.0",
   "type": "module",
