@@ -1,6 +1,6 @@
 ﻿# Multimodal File Workspace
 
-Live Demo: https://multimodal-file-assistant-agent.vercel.app
+Live Demo: https://file-workspace.vercel.app
 
 Category: File Processing & Document Automation
 
@@ -115,7 +115,7 @@ npm run build
 # Configure next.config.mjs for export if needed, then deploy out/ to Pages
 ```
 
-Live demo at `https://multimodal-file-assistant-agent.vercel.app`.
+Live demo at `https://file-workspace.vercel.app`.
 
 ### Custom Hosting
 
