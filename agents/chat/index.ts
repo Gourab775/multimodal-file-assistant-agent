@@ -132,9 +132,9 @@ export async function onRequest(context: any) {
   const uploadedFiles: Array<{ name: string; base64: string }> =
     body.files ?? [];
 
-  // Detect user locale from the language hint appended by the frontend
-  const locale: "zh" | "en" = message.includes("[语言要求：")
-    ? "zh"
+  // Detect user locale from the language hint appended by the frontend (English-only)
+  const locale: "en" = message.includes("[Language requirement:")
+    ? "en"
     : message.includes("[Language:")
     ? "en"
     : "en";
@@ -297,10 +297,7 @@ export async function onRequest(context: any) {
     // Tell the AI files are ready — no need to list /tmp
     if (sandboxWorking && filesToUpload.length > 0) {
       const fileList = filesToUpload.map((f) => `/tmp/${f.name}`).join(", ");
-      const sysMsg =
-        locale === "zh"
-          ? `\n\n[系统提示：文件已就绪，路径为: ${fileList}。请直接分析和处理，不需要先 list 目录确认。]`
-          : `\n\n[System: Files are ready at: ${fileList}. Start analysis directly — do not list the directory first.]`;
+      const sysMsg = `\n\n[System: Files ready, paths: ${fileList}. Please analyze directly — do not list the directory first.]`;
       message = message + sysMsg;
     }
   }

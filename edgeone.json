@@ -12,6 +12,6 @@
   },
   "services": {
     "framework": "workflow",
-    "dir": "services"
+    "dir": "agents"
   }
 }

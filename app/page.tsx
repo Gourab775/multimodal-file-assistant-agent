@@ -70,7 +70,6 @@ function ThinkingPanel({
   isDark: boolean;
   locale: string;
 }) {
-  const isZh = locale === 'zh';
   const stepCount = steps.length;
 
   return (
@@ -92,10 +91,10 @@ function ThinkingPanel({
         )}
         <span className={`font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
           {isLive
-            ? (isZh ? '处理中...' : 'Processing...')
+            ? 'Processing...'
             : stepCount > 0
-              ? (isZh ? `思考过程 · ${stepCount} 步操作` : `Thinking · ${stepCount} steps`)
-              : (isZh ? '思考过程' : 'Thinking')}
+              ? `Thinking · ${stepCount} steps`
+              : 'Thinking'}
         </span>
         {!isLive && stepCount > 0 && (
           <span className={`ml-auto ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
@@ -115,7 +114,7 @@ function ThinkingPanel({
                     ? (isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-50 text-red-600')
                     : (isDark ? 'bg-amber-900/20 text-amber-300' : 'bg-amber-50 text-amber-700')
                 }`}>
-                  {step.type === 'error' ? 'ERR' : (isZh ? '操作' : 'ACT')}
+                  {step.type === 'error' ? 'ERR' : 'ACT'}
                 </span>
                 <span className={`leading-relaxed ${
                   step.type === 'error'
@@ -127,7 +126,7 @@ function ThinkingPanel({
             {isLive && (
               <div className={`flex items-center gap-1.5 pt-0.5 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
                 <span className="w-1 h-1 rounded-full bg-current animate-pulse" />
-                <span>{isZh ? '等待下一步操作...' : 'Waiting for next action...'}</span>
+                <span>Waiting for next action...</span>
               </div>
             )}
           </div>
@@ -170,47 +169,46 @@ function readFileAsBase64(file: File): Promise<string> {
 }
 
 function timeStr(ts: number): string {
-  return new Date(ts).toLocaleTimeString('zh-CN', { hour12: false });
+  return new Date(ts).toLocaleTimeString('en-US', { hour12: false });
 }
 
 function toolToAgentAction(tool: string, input: any, locale: string): string {
-  const isZh = locale === 'zh';
   switch (tool) {
     case 'files': {
       const op = input?.op;
       const path = input?.path || '';
       const fname = path.split('/').pop();
-      if (op === 'read') return isZh ? `📖 读取文件 ${fname}` : `📖 Reading ${fname}`;
-      if (op === 'write') return isZh ? `✍️ 写入文件 ${fname}` : `✍️ Writing ${fname}`;
-      if (op === 'list') return isZh ? `📂 列出目录 ${path}` : `📂 Listing ${path}`;
-      if (op === 'exists') return isZh ? `🔍 检查文件 ${fname}` : `🔍 Checking ${fname}`;
-      if (op === 'makeDir') return isZh ? `📁 创建目录 ${path}` : `📁 Creating dir ${path}`;
-      if (op === 'remove') return isZh ? `🗑️ 删除文件 ${fname}` : `🗑️ Removing ${fname}`;
-      return isZh ? `📄 文件操作: ${op}` : `📄 File op: ${op}`;
+      if (op === 'read') return `📖 Reading ${fname}`;
+      if (op === 'write') return `✍️ Writing ${fname}`;
+      if (op === 'list') return `📂 Listing ${path}`;
+      if (op === 'exists') return `🔍 Checking ${fname}`;
+      if (op === 'makeDir') return `📁 Creating dir ${path}`;
+      if (op === 'remove') return `🗑️ Removing ${fname}`;
+      return `📄 File op: ${op}`;
     }
     case 'commands': {
       const cmd = (input?.cmd || '').slice(0, 120);
-      if (cmd.includes('pip install')) return isZh ? `📦 准备处理环境...` : `📦 Preparing environment...`;
-      if (cmd.includes('base64')) return isZh ? `📤 准备文件下载` : `📤 Preparing download`;
-      if (cmd.includes('file ') || cmd.includes('identify')) return isZh ? `🔍 检查文件信息` : `🔍 Checking file info`;
-      return isZh ? `⚡ 正在处理...` : `⚡ Processing...`;
+      if (cmd.includes('pip install')) return `📦 Preparing environment...`;
+      if (cmd.includes('base64')) return `📤 Preparing download`;
+      if (cmd.includes('file ') || cmd.includes('identify')) return `🔍 Checking file info`;
+      return `⚡ Processing...`;
     }
     case 'code_interpreter': {
       const lang = input?.language || 'python';
       const code = (input?.code || '').slice(0, 80);
-      if (code.includes('pandas') || code.includes('pd.read_csv')) return isZh ? `🐍 Python 数据分析中...` : `🐍 Python data analysis...`;
-      if (code.includes('FPDF') || code.includes('fpdf')) return isZh ? `🐍 Python 生成 PDF...` : `🐍 Python generating PDF...`;
-      if (code.includes('matplotlib') || code.includes('plt.')) return isZh ? `📊 Python 生成图表...` : `📊 Python creating chart...`;
-      if (code.includes('docx') || code.includes('Document')) return isZh ? `🐍 Python 处理 Word 文档...` : `🐍 Python processing Word doc...`;
-      if (code.includes('PIL') || code.includes('Image')) return isZh ? `🖼️ Python 处理图片...` : `🖼️ Python processing image...`;
-      return isZh ? `🐍 ${lang} 代码执行中...` : `🐍 Running ${lang} code...`;
+      if (code.includes('pandas') || code.includes('pd.read_csv')) return `🐍 Python data analysis...`;
+      if (code.includes('FPDF') || code.includes('fpdf')) return `🐍 Python generating PDF...`;
+      if (code.includes('matplotlib') || code.includes('plt.')) return `📊 Python creating chart...`;
+      if (code.includes('docx') || code.includes('Document')) return `🐍 Python processing Word doc...`;
+      if (code.includes('PIL') || code.includes('Image')) return `🖼️ Python processing image...`;
+      return `🐍 Running ${lang} code...`;
     }
     case 'deliver_file': {
       const fname = input?.filename || '';
-      return isZh ? `📥 交付文件: ${fname}` : `📥 Delivering: ${fname}`;
+      return `📥 Delivering: ${fname}`;
     }
     default:
-      return isZh ? `🔧 ${tool}` : `🔧 ${tool}`;
+      return `🔧 ${tool}`;
   }
 }
 
@@ -243,7 +241,7 @@ function generateSampleContent(name: string): string {
 // ============ Main Component ============
 
 export default function Home() {
-  const { t, locale, setLocale } = useI18n();
+  const { t, locale } = useI18n();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [activities, setActivities] = useState<ActivityEntry[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -341,7 +339,7 @@ export default function Home() {
 
     if (newFiles.length > 0) {
       const desc = newFiles.map((f) => `- ${f.name} (${f.type}, ${f.size})`).join('\n');
-      fullMessage = `${text}\n\n上传的文件：\n${desc}`;
+      fullMessage = `${text}\n\nUploaded files:\n${desc}`;
       for (const f of newFiles) {
         if (f.base64) filesToUpload.push({ name: f.name, base64: f.base64 });
         sentFileIds.current.add(f.id);
@@ -350,14 +348,12 @@ export default function Home() {
       setFiles((prev) => prev.map((f) => sentFileIds.current.has(f.id) ? { ...f, status: 'done' } : f));
     }
 
-    const langHint = locale === 'zh'
-      ? '\n\n[语言要求：所有输出内容（包括生成的文件、报告标题、表头等）必须使用中文]'
-      : '\n\n[Language: All output (including generated files, report titles, headers) must be in English]';
+    const langHint = '\n\n[Language requirement: All output (including generated files, report titles, headers) must be in English]';
     fullMessage += langHint;
 
     if (silent) {
       const fileCount = newFiles.length || files.length;
-      const msg = locale === 'zh' ? `📎 已接收 ${fileCount} 份文件，正在分析...` : `📎 Received ${fileCount} file(s), analyzing...`;
+      const msg = `📎 Received ${fileCount} file(s), analyzing...`;
       addActivity('system', msg);
     } else {
       addActivity('user', text);
@@ -495,14 +491,14 @@ export default function Home() {
       } else if (hadErrors && !gotFile) {
         // Errors occurred but no file was produced — show retry card
         addActivity('retry_card',
-          locale === 'zh' ? '处理过程中遇到了问题，请重试' : 'Something went wrong during processing, please retry',
+          'Something went wrong during processing, please retry',
           { message: text }
         );
       } else {
         setActivities((prev) => {
           const last = prev[prev.length - 1];
           if (last?.type === 'text' && last.content) {
-            const cleaned = last.content.replace(/\n*(?:以下是|请选择|请点击|点击上方|您可以选择|推荐的处理方案|以下是为您推荐)[\s\S]*$/, '').trim();
+            const cleaned = last.content.replace(/\n*(?:Here are|Please select|Please click|Click above|You can choose|Recommended options|Here are the recommended)[\s\S]*$/, '').trim();
             if (cleaned !== last.content && cleaned) {
               return prev.map((a) => a.id === last.id ? { ...a, content: cleaned } : a);
             }
@@ -553,7 +549,7 @@ export default function Home() {
           <div className="text-center">
             <div className="text-4xl mb-2">📂</div>
             <p className={`text-sm font-medium ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>
-              {locale === 'zh' ? '释放以上传文件' : 'Drop files to upload'}
+              Drop files to upload
             </p>
           </div>
         </div>
@@ -568,7 +564,7 @@ export default function Home() {
             </svg>
           </div>
           <h1 className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
-            {locale === 'zh' ? '智能文档处理' : 'Smart Doc Processor'}
+            Smart Doc Processor
           </h1>
           <div className={`w-2 h-2 rounded-full ${isProcessing ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'}`} />
         </div>
@@ -576,17 +572,13 @@ export default function Home() {
           <DeployButtons
             templateSlug="multimodal-file-assistant-agent"
             githubUrl="https://github.com/edgeone-pages-test/multimodal-file-assistant-agent"
-            lang={locale}
+            lang="en"
           />
           {tokenUsage.input > 0 && (
             <span className={`text-xs px-2 py-1 rounded ${isDark ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-500'}`}>
               {(tokenUsage.input + tokenUsage.output).toLocaleString()} tokens
             </span>
           )}
-          <button onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')}
-            className={`px-2.5 py-1.5 text-xs rounded-md transition-colors ${isDark ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}>
-            {locale === 'zh' ? 'EN' : '中'}
-          </button>
           <button onClick={() => setTheme(isDark ? 'light' : 'dark')}
             className={`px-2.5 py-1.5 text-xs rounded-md transition-colors ${isDark ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}>
             {isDark ? '☀️' : '🌙'}
@@ -609,7 +601,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h2 className={`text-base font-semibold mb-1.5 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
-                  {locale === 'zh' ? '智能文档处理' : 'Smart Document Processor'}
+                  Smart Document Processor
                 </h2>
                 <p className={`text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                   {t.emptyHint}
@@ -628,7 +620,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                   <span className="text-sm font-medium">
-                    {locale === 'zh' ? '点击上传文件' : 'Click to upload files'}
+                    Click to upload files
                   </span>
                   <span className={`text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
                     {t.supportedTypes}
@@ -637,7 +629,7 @@ export default function Home() {
 
                 <div className={`mt-3 flex items-center gap-3 text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
                   <span className="flex-1 h-px bg-current opacity-20" />
-                  <span>{locale === 'zh' ? '或' : 'or'}</span>
+                  <span>or</span>
                   <span className="flex-1 h-px bg-current opacity-20" />
                 </div>
 
@@ -700,7 +692,7 @@ export default function Home() {
                         : 'bg-white hover:bg-red-50 text-red-600 border border-red-200 shadow-sm'
                       }`}
                     >
-                      🔄 {locale === 'zh' ? '重新操作' : 'Retry'}
+                      🔄 Retry
                     </button>
                   </div>
                 </div>
@@ -727,7 +719,7 @@ export default function Home() {
                 {entry.type === 'tool_call' && (
                   <>
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${isDark ? 'bg-amber-900/20 text-amber-300' : 'bg-amber-50 text-amber-700'}`}>
-                      {locale === 'zh' ? '操作' : 'ACT'}
+                      ACT
                     </span>
                     <span className={`text-xs ${isDark ? 'text-amber-200/80' : 'text-amber-700'}`}>{entry.content}</span>
                   </>
@@ -772,7 +764,7 @@ export default function Home() {
                   <>
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${isDark ? 'bg-emerald-900/20 text-emerald-300' : 'bg-emerald-50 text-emerald-700'}`}>FILE</span>
                     <span className={`text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                      {locale === 'zh' ? '文件已生成 ↓' : 'File ready ↓'}
+                      File ready ↓
                     </span>
                   </>
                 )}
@@ -792,7 +784,7 @@ export default function Home() {
           {isProcessing && (
             <div className={`flex items-center gap-2 text-xs py-1 max-w-3xl mx-auto w-full ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-              {locale === 'zh' ? '处理中...' : 'Processing...'}
+              Processing...
             </div>
           )}
 
@@ -800,7 +792,7 @@ export default function Home() {
           {!isProcessing && activities.filter((a) => a.type === 'file_download').length > 0 && (
             <div className={`mt-4 p-4 rounded-xl border max-w-3xl mx-auto w-full ${isDark ? 'bg-emerald-950/10 border-emerald-800/30' : 'bg-emerald-50/50 border-emerald-200'}`}>
               <p className={`text-xs font-medium mb-2.5 ${isDark ? 'text-emerald-300' : 'text-emerald-700'}`}>
-                📥 {locale === 'zh' ? '可下载文件' : 'Downloads'}
+                📥 Downloads
               </p>
               <div className="space-y-2">
                 {activities.filter((a) => a.type === 'file_download').map((entry) => (
@@ -856,7 +848,7 @@ export default function Home() {
                     }}
                     className={`text-[11px] px-2 py-1 rounded-full transition-colors ${isDark ? 'text-gray-500 hover:text-red-400' : 'text-gray-400 hover:text-red-500'}`}
                   >
-                    {locale === 'zh' ? '清空' : 'Clear all'}
+                    Clear all
                   </button>
                 )}
               </div>
@@ -871,7 +863,7 @@ export default function Home() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isProcessing}
-                title={locale === 'zh' ? '上传文件' : 'Attach files'}
+                title="Attach files"
                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-xl transition-colors disabled:opacity-40 ${isDark
                   ? 'text-gray-400 hover:text-blue-400 hover:bg-blue-600/10'
                   : 'text-gray-400 hover:text-blue-500 hover:bg-blue-50'
@@ -895,7 +887,7 @@ export default function Home() {
                     sendMessage();
                   }
                 }}
-                placeholder={locale === 'zh' ? '输入指令... (合并 PDF / 数据分析 / 格式转换)' : 'Enter command... (merge PDF / analyze / convert)'}
+                placeholder="Enter command... (merge PDF / analyze / convert)"
                 disabled={isProcessing}
                 className={`flex-1 bg-transparent text-sm focus:outline-none disabled:opacity-50 py-1 px-1 ${isDark ? 'text-gray-100 placeholder-gray-600' : 'text-gray-900 placeholder-gray-400'}`}
               />
@@ -905,7 +897,7 @@ export default function Home() {
                 onClick={() => sendMessage()}
                 disabled={!userInput.trim() || isProcessing}
                 className={`flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-xl transition-all disabled:opacity-40 ${isDark ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20' : 'bg-blue-500 hover:bg-blue-400 text-white shadow-md shadow-blue-200'}`}>
-                {isProcessing ? '...' : locale === 'zh' ? '发送' : 'Send'}
+                {isProcessing ? '...' : 'Send'}
               </button>
             </div>
 

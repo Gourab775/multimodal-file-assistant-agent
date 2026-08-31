@@ -5,9 +5,9 @@
 
 /* eslint-disable no-useless-escape */
 
-export const SKILL_PDF_GENERATION = `## Loaded Skill: PDF & Chart Generation (Chinese Content)
+export const SKILL_PDF_GENERATION = `## Loaded Skill: PDF & Chart Generation
 
-**CRITICAL**: Use matplotlib + PdfPages for ALL PDF generation with Chinese text. NEVER use fpdf2 for Chinese.
+**CRITICAL**: Use matplotlib + PdfPages for ALL PDF generation. NEVER use fpdf2 for special characters.
 When generating PDF or charts, follow the templates below exactly — only change the data/content.
 
 ### Font Setup (include at top of EVERY script)
@@ -29,7 +29,7 @@ _FONT_CANDIDATES = [
 _font_path = next((p for p in _FONT_CANDIDATES if os.path.exists(p)), None)
 font = FontProperties(fname=_font_path) if _font_path else FontProperties()
 font_bold = FontProperties(fname=_font_path, weight='bold') if _font_path else FontProperties(weight='bold')
-print(f"Font: {_font_path or 'default (no CJK font found)'}")
+print(f"Font: {_font_path or 'default font found'}")
 COLORS = ['#2563eb', '#dc2626', '#16a34a', '#ca8a04', '#9333ea', '#0891b2', '#e11d48', '#4f46e5']
 \\\`\\\`\\\`
 
@@ -60,19 +60,19 @@ with PdfPages('/tmp/report.pdf') as pdf:
     fig, ax = plt.subplots(figsize=(8.27, 11.69))
     ax.axis('off')
     ax.add_patch(plt.Rectangle((0, 0.85), 1, 0.15, transform=ax.transAxes, color='#1e40af', zorder=0))
-    ax.text(0.5, 0.92, '数据分析报告', fontsize=28, fontproperties=font_bold, ha='center', va='center', color='white')
-    ax.text(0.5, 0.78, '报告副标题 / 数据来源', fontsize=14, fontproperties=font, ha='center', color='#374151')
-    ax.text(0.5, 0.72, '生成日期: 2025-05-27', fontsize=10, fontproperties=font, ha='center', color='#6b7280')
+    ax.text(0.5, 0.92, 'Data Analysis Report', fontsize=28, fontproperties=font_bold, ha='center', va='center', color='white')
+    ax.text(0.5, 0.78, 'Report Subtitle / Data Source', fontsize=14, fontproperties=font, ha='center', color='#374151')
+    ax.text(0.5, 0.72, 'Generated Date: 2025-05-27', fontsize=10, fontproperties=font, ha='center', color='#6b7280')
     pdf.savefig(fig); plt.close()
 
     # === Page 2: Data Table ===
     fig, ax = plt.subplots(figsize=(8.27, 11.69))
     ax.axis('off')
-    ax.text(0.5, 0.96, '数据明细', fontsize=18, fontproperties=font_bold, ha='center', va='top')
-    col_labels = ['产品', 'Q1', 'Q2', 'Q3', 'Q4']
+    ax.text(0.5, 0.96, 'Data Details', fontsize=18, fontproperties=font_bold, ha='center', va='top')
+    col_labels = ['Product', 'Q1', 'Q2', 'Q3', 'Q4']
     table_data = [
-        ['产品A', '$45K', '$52K', '$61K', '$72K'],
-        ['产品B', '$85K', '$95K', '$110K', '$128K'],
+        ['Product A', '$45K', '$52K', '$61K', '$72K'],
+        ['Product B', '$85K', '$95K', '$110K', '$128K'],
     ]
     table = ax.table(cellText=table_data, colLabels=col_labels, loc='center', cellLoc='center')
     table.auto_set_font_size(False); table.set_fontsize(9); table.scale(1, 1.6)
@@ -87,11 +87,11 @@ with PdfPages('/tmp/report.pdf') as pdf:
 
     # === Page 3: Bar Chart ===
     fig, ax = plt.subplots(figsize=(8.27, 6))
-    categories = ['产品A', '产品B', '产品C', '产品D']
+    categories = ['Product A', 'Product B', 'Product C', 'Product D']
     values = [72, 128, 51, 95]
     bars = ax.bar(categories, values, color=COLORS[:len(categories)], width=0.6, edgecolor='white', linewidth=0.5)
-    ax.set_title('各产品 Q4 营收 (千元)', fontproperties=font_bold, fontsize=14, pad=15)
-    ax.set_ylabel('营收 ($K)', fontproperties=font, fontsize=10)
+    ax.set_title('Q4 Revenue by Product (in thousands)', fontproperties=font_bold, fontsize=14, pad=15)
+    ax.set_ylabel('Revenue ($K)', fontproperties=font, fontsize=10)
     ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
     ax.set_xticks(range(len(categories)))
     ax.set_xticklabels(categories, fontproperties=font, fontsize=9)
@@ -125,11 +125,11 @@ COLORS = ['#2563eb', '#dc2626', '#16a34a', '#ca8a04', '#9333ea', '#0891b2']
 # --- Line Chart (trend) ---
 fig, ax = plt.subplots(figsize=(10, 5))
 quarters = ['Q1', 'Q2', 'Q3', 'Q4']
-products = {'产品A': [45, 52, 61, 72], '产品B': [85, 95, 110, 128], '产品C': [15, 42, 68, 95]}
+products = {'Product A': [45, 52, 61, 72], 'Product B': [85, 95, 110, 128], 'Product C': [15, 42, 68, 95]}
 for i, (name, data) in enumerate(products.items()):
     ax.plot(quarters, data, marker='o', linewidth=2.5, markersize=8, color=COLORS[i], label=name)
-ax.set_title('季度营收趋势', fontproperties=font_bold, fontsize=16, pad=15)
-ax.set_ylabel('营收 (千元)', fontproperties=font, fontsize=11)
+ax.set_title('Quarterly Revenue Trend', fontproperties=font_bold, fontsize=16, pad=15)
+ax.set_ylabel('Revenue (in thousands)', fontproperties=font, fontsize=11)
 ax.legend(prop=font, framealpha=0.9, loc='upper left')
 ax.grid(True, alpha=0.3, linestyle='--')
 ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
@@ -181,11 +181,11 @@ with PdfPages('/tmp/merged_report.pdf') as pdf:
     fig, ax = plt.subplots(figsize=(8.27, 11.69))
     ax.axis('off')
     ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, color='#0f172a'))
-    ax.text(0.5, 0.55, '综合分析报告', fontsize=32, fontproperties=font_bold, ha='center', color='white')
-    ax.text(0.5, 0.45, '多文件整合 · 数据洞察', fontsize=14, fontproperties=font, ha='center', color='#94a3b8')
+    ax.text(0.5, 0.55, 'Comprehensive Analysis Report', fontsize=32, fontproperties=font_bold, ha='center', color='white')
+    ax.text(0.5, 0.45, 'Multi-File Integration · Data Insights', fontsize=14, fontproperties=font, ha='center', color='#94a3b8')
     pdf.savefig(fig); plt.close()
-    add_text_page(pdf, '文件 1: 季度报告', '此处放入文件内容...', 'quarterly-report.txt')
-    add_text_page(pdf, '文件 2: 项目计划', '此处放入文件内容...', 'project-plan.md')
+    add_text_page(pdf, 'File 1: Quarterly Report', 'Insert file content here...', 'quarterly-report.txt')
+    add_text_page(pdf, 'File 2: Project Plan', 'Insert file content here...', 'project-plan.md')
 
 print("Merged PDF: /tmp/merged_report.pdf")
 \\\`\\\`\\\`
@@ -194,7 +194,7 @@ print("Merged PDF: /tmp/merged_report.pdf")
 - **ALWAYS include the full font probe block** (5 lines checking _FONT_CANDIDATES) — do not hardcode a single path
 - **Replace data variables** with actual file content read via code_interpreter
 - **Keep the COLORS array** for consistent styling
-- **fpdf2 is ONLY for English-only text**. For ANY Chinese content, use matplotlib + PdfPages.
+- **fpdf2 is ONLY for English-only text**. For ANY content, use matplotlib + PdfPages.
 - **CRITICAL**: After the Python script prints success, your VERY NEXT action MUST be calling deliver_file. No exceptions.
   - Do NOT call code_interpreter again to verify with stat, os.path.exists, ls, or any other check.
   - Do NOT run any shell command after the print — the file exists, trust it.

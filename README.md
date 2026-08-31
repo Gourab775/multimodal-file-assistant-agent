@@ -1,4 +1,4 @@
-﻿# Multimodal File Workspace
+# Multimodal File Workspace
 
 Live Demo: https://file-workspace.vercel.app
 
